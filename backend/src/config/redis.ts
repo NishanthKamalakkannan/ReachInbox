@@ -28,7 +28,8 @@ export const redisConnectionOptions = getRedisConnectionOptions();
 export const redisClient = new Redis(redisConnectionOptions);
 
 redisClient.on('connect', () => {
-  logger.info(`Redis connected successfully to ${env.REDIS_HOST}:${env.REDIS_PORT}`);
+  const target = env.REDIS_URL ? 'Cloud Redis (Upstash)' : `${env.REDIS_HOST}:${env.REDIS_PORT}`;
+  logger.info(`Redis connected successfully to ${target}`);
 });
 
 redisClient.on('error', (err) => {

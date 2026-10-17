@@ -3,7 +3,7 @@ import { User, SlackStatus } from '../types/auth';
 import { Email, ScheduledEmailsResponse, DashboardStats } from '../types/email';
 import { Campaign, Sender, ScheduleCampaignPayload } from '../types/campaign';
 
-const baseURL = import.meta.env.VITE_API_URL || '';
+const baseURL = ((import.meta as any).env?.VITE_API_URL as string) || '';
 
 export const apiClient = axios.create({
   baseURL,
