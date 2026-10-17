@@ -46,7 +46,7 @@ export class SchedulerService {
     });
 
     // 3. Atomically persist Campaign and all Email records in PostgreSQL
-    const { campaign, emails } = await prisma.$transaction(async (tx) => {
+    const { campaign, emails } = await prisma.$transaction(async (tx: any) => {
       const createdCampaign = await tx.campaign.create({
         data: {
           userId,
@@ -60,7 +60,7 @@ export class SchedulerService {
 
       // Bulk create emails with generated IDs
       const createdEmails = await Promise.all(
-        preparedEmails.map((e) =>
+        preparedEmails.map((e: any) =>
           tx.email.create({
             data: {
               campaignId: createdCampaign.id,
@@ -86,7 +86,7 @@ export class SchedulerService {
 
     // 4. Enqueue BullMQ delayed jobs for each email
     let enqueuedCount = 0;
-    const enqueuePromises = emails.map(async (email) => {
+    const enqueuePromises = emails.map(async (email: any) => {
       const delayMs = calculateBullMqDelay(email.scheduledAt.getTime(), currentTimeMs);
       const jobId = getDeterministicJobId(email.id);
 

@@ -131,7 +131,7 @@ export class SearchService {
         take: 50,
       });
 
-      return fallbackResults.map((e) => ({
+      return fallbackResults.map((e: any) => ({
         id: e.id,
         recipient: e.recipient,
         subject: e.subject,
