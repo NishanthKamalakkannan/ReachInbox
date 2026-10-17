@@ -1,14 +1,28 @@
-import Redis from 'ioredis';
+import Redis, { RedisOptions } from 'ioredis';
 import { env } from './env';
 import { logger } from '../utils/logger';
 
-export const redisConnectionOptions = {
-  host: env.REDIS_HOST,
-  port: env.REDIS_PORT,
-  password: env.REDIS_PASSWORD || undefined,
-  maxRetriesPerRequest: null,
-  enableReadyCheck: false,
-};
+function getRedisConnectionOptions(): RedisOptions {
+  if (env.REDIS_URL) {
+    const temp = new Redis(env.REDIS_URL);
+    const opts = { ...temp.options };
+    temp.disconnect();
+    return {
+      ...opts,
+      maxRetriesPerRequest: null,
+      enableReadyCheck: false,
+    };
+  }
+  return {
+    host: env.REDIS_HOST,
+    port: env.REDIS_PORT,
+    password: env.REDIS_PASSWORD || undefined,
+    maxRetriesPerRequest: null,
+    enableReadyCheck: false,
+  };
+}
+
+export const redisConnectionOptions = getRedisConnectionOptions();
 
 // Dedicated client for application-level atomic operations (Rate Limiting, Deduplication)
 export const redisClient = new Redis(redisConnectionOptions);
