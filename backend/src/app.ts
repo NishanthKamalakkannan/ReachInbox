@@ -26,7 +26,17 @@ export function createApp(): Application {
   // CORS Configuration
   app.use(
     cors({
-      origin: [env.FRONTEND_URL, 'http://localhost:5173', 'http://localhost:3000'],
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (
+          origin === env.FRONTEND_URL ||
+          origin.endsWith('.onrender.com') ||
+          origin.includes('localhost')
+        ) {
+          return callback(null, true);
+        }
+        return callback(null, true);
+      },
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
@@ -42,6 +52,17 @@ export function createApp(): Application {
   if (env.NODE_ENV !== 'test') {
     app.use(morgan('dev'));
   }
+
+  // Root API welcome endpoint
+  app.get('/', (req: express.Request, res: express.Response) => {
+    res.json({
+      service: 'ReachInbox Outbound Email Scheduler API',
+      status: 'active',
+      health: '/health',
+      queues: '/admin/queues',
+      frontend: env.FRONTEND_URL,
+    });
+  });
 
   // Health check endpoint
   app.get('/health', (req: express.Request, res: express.Response) => {

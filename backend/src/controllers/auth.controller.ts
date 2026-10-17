@@ -43,15 +43,15 @@ export class AuthController {
     try {
       const { token } = await authService.handleGoogleCallback(code);
 
-      // Set secure HTTP-only cookie
+      // Set secure HTTP-only cookie with cross-domain support
       res.cookie(AUTH_COOKIE_NAME, token, {
         httpOnly: true,
-        secure: env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        secure: true,
+        sameSite: 'none',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
 
-      res.redirect(`${env.FRONTEND_URL}/dashboard`);
+      res.redirect(`${env.FRONTEND_URL}/dashboard?token=${encodeURIComponent(token)}`);
     } catch (err: any) {
       logger.error('Failed to authenticate Google user', { error: err.message });
       res.redirect(

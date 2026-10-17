@@ -3,6 +3,7 @@ import { Modal } from '../../components/Modal';
 import { Button } from '../../components/Button';
 import { SlackStatus } from '../../types/auth';
 import { Hash, CheckCircle2, AlertCircle, Unlink, ExternalLink } from 'lucide-react';
+import { baseURL } from '../../services/api';
 
 interface SlackConnectionModalProps {
   isOpen: boolean;
@@ -21,7 +22,7 @@ export const SlackConnectionModal: React.FC<SlackConnectionModalProps> = ({
 
   const handleConnect = () => {
     // Redirect to backend Slack OAuth entrypoint
-    window.location.href = '/api/slack/connect';
+    window.location.href = `${baseURL}/api/slack/connect`;
   };
 
   const handleDisconnect = async () => {

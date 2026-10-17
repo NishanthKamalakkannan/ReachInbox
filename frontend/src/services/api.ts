@@ -3,7 +3,7 @@ import { User, SlackStatus } from '../types/auth';
 import { Email, ScheduledEmailsResponse, DashboardStats } from '../types/email';
 import { Campaign, Sender, ScheduleCampaignPayload } from '../types/campaign';
 
-const baseURL = ((import.meta as any).env?.VITE_API_URL as string) || '';
+export const baseURL = ((import.meta as any).env?.VITE_API_URL as string) || '';
 
 export const apiClient = axios.create({
   baseURL,
@@ -11,6 +11,14 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+});
+
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('reachinbox_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export const api = {

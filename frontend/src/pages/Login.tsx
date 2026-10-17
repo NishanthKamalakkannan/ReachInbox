@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '../components/Button';
 import { Zap, ShieldCheck, Clock, Hash, Database, Sparkles } from 'lucide-react';
+import { baseURL } from '../services/api';
 
 interface LoginProps {
   onDemoLogin: () => Promise<any>;
@@ -20,7 +21,7 @@ export const Login: React.FC<LoginProps> = ({ onDemoLogin }) => {
   }, []);
 
   const handleGoogleLogin = () => {
-    window.location.href = '/auth/google';
+    window.location.href = `${baseURL}/auth/google`;
   };
 
   const handleDemoClick = async () => {

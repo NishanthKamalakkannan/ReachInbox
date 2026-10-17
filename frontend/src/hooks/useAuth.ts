@@ -33,6 +33,15 @@ export function useAuth() {
   }, []);
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    if (token) {
+      localStorage.setItem('reachinbox_token', token);
+      params.delete('token');
+      const newQuery = params.toString();
+      const newUrl = window.location.pathname + (newQuery ? `?${newQuery}` : '');
+      window.history.replaceState({}, document.title, newUrl);
+    }
     fetchUser();
   }, [fetchUser]);
 
@@ -45,10 +54,11 @@ export function useAuth() {
   const logout = async () => {
     try {
       await api.auth.logout();
-      setUser(null);
-      window.location.href = '/login';
     } catch (err) {
       console.error('Logout error:', err);
+    } finally {
+      localStorage.removeItem('reachinbox_token');
+      setUser(null);
     }
   };
 
@@ -56,6 +66,9 @@ export function useAuth() {
     try {
       setLoading(true);
       const res = await api.auth.demoLogin();
+      if (res.token) {
+        localStorage.setItem('reachinbox_token', res.token);
+      }
       setUser(res.user);
       return res.user;
     } finally {
