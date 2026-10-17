@@ -3,7 +3,11 @@ import { User, SlackStatus } from '../types/auth';
 import { Email, ScheduledEmailsResponse, DashboardStats } from '../types/email';
 import { Campaign, Sender, ScheduleCampaignPayload } from '../types/campaign';
 
-export const baseURL = ((import.meta as any).env?.VITE_API_URL as string) || '';
+export const baseURL =
+  ((import.meta as any).env?.VITE_API_URL as string) ||
+  (typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    ? ''
+    : 'https://reachinbox-qs1f.onrender.com');
 
 export const apiClient = axios.create({
   baseURL,
